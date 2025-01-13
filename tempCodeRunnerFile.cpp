@@ -1,50 +1,37 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// In this problem we need to find the smallest element in the array which has been rotated and the array also contains duplicates
+void findAllPeaks(vector<int>& arr, int l, int h, vector<int>& peaks) {
+    if (l > h) return;
 
-int find_min_duplicates(vector<int> &arr)
-{
-    int ans = INT_MAX;
+    int mid = l + (h - l) / 2;
 
-    int l = 0, h = arr.size() - 1;
-    while (l <= h)
-    {
-        int mid = (l + h) / 2;
-
-        if (arr[l] == arr[mid] && arr[mid] == arr[h])
-        {
-            l++;
-            h--;
-            continue;
-        }
-
-        if (arr[l] <= arr[mid])
-        {
-            ans = min(ans, arr[l]);
-            l = mid + 1;
-        }
-        else if (arr[mid] <= arr[h])
-        {
-            ans = min(ans, arr[mid]);
-            h = mid - 1;
-        }
+    // Check if mid is a peak
+    if ((mid == 0 || arr[mid] > arr[mid - 1]) &&
+        (mid == arr.size() - 1 || arr[mid] > arr[mid + 1])) {
+        peaks.push_back(mid);
     }
-    return ans;
+
+    // Recursively check the left and right halves
+    findAllPeaks(arr, l, mid - 1, peaks);
+    findAllPeaks(arr, mid + 1, h, peaks);
 }
 
-signed main()
-{
-    int n;
-    cout << "ENTER SIZE OF ARRAY" << endl;
-    cin >> n;
-    vector<int> arr(n);
-    for (int i = 0; i < arr.size(); i++)
-    {
-        cin >> arr[i];
+vector<int> findAllPeaks(vector<int>& arr) {
+    vector<int> peaks;
+    findAllPeaks(arr, 0, arr.size() - 1, peaks);
+    return peaks;
+}
+
+int main() {
+    vector<int> arr = {1, 3, 2, 4, 1, 5};
+    vector<int> peaks = findAllPeaks(arr);
+
+    cout << "Peaks found at indices: ";
+    for (int peak : peaks) {
+        cout << peak << " ";
     }
+    cout << endl;
 
-    int ans = find_min_duplicates(arr);
-
-    cout << ans << endl;
+    return 0;
 }
